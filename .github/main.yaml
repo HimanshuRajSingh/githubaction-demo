@@ -1,1 +1,46 @@
 #Test file
+name: Email Notification on Commit
+
+on:
+  push:
+    branches:
+      - main # Or whatever branch you want to monitor
+
+jobs:
+  send_email:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get commit details
+        id: commit_info
+        run: |
+          echo "COMMIT_SHA=${GITHUB_SHA}" >> $GITHUB_OUTPUT
+          echo "COMMIT_MESSAGE=$(git log -1 --pretty=%B)" >> $GITHUB_OUTPUT
+          echo "COMMIT_AUTHOR=$(git log -1 --pretty=%an)" >> $GITHUB_OUTPUT
+          echo "COMMIT_AUTHOR_EMAIL=$(git log -1 --pretty=%ae)" >> $GITHUB_OUTPUT
+          echo "COMMIT_URL=${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/commit/${GITHUB_SHA}" >> $GITHUB_OUTPUT
+
+      - name: Send Email
+        uses: dawidd6/action-send-mail@v3 # Using a third-party action for sending emails.
+        with:
+          server_address: smtp.gmail.com # or your SMTP server
+          server_port: 587 # or your SMTP port
+          username: ${{secrets.MAIL_USERNAME}} # your email address
+          password: ${{secrets.MAIL_PASSWORD}} # your email password or app password
+          subject: "New Commit: ${{ github.repository }}"
+          to: ${{secrets.RECIPIENT_EMAIL}} # Recipient email address
+          from: ${{secrets.MAIL_USERNAME}}
+          body: |
+            A new commit has been pushed to ${{ github.repository }}.
+
+            Commit SHA: ${{ steps.commit_info.outputs.COMMIT_SHA }}
+            Commit Message: ${{ steps.commit_info.outputs.COMMIT_MESSAGE }}
+            Author: ${{ steps.commit_info.outputs.COMMIT_AUTHOR }} (${{ steps.commit_info.outputs.COMMIT_AUTHOR_EMAIL }})
+            Commit URL: ${{ steps.commit_info.outputs.COMMIT_URL }}
+
+            Repository: ${{ github.repository }}
+            Branch: ${{ github.ref_name }}
+          secure: tls # or ssl, depending on your SMTP server.
