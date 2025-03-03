@@ -1,9 +1,9 @@
-name: Copy Repository to tmp
+name: Copy Repository to temp
 
 on:
   push:
     branches:
-      - main
+      - master # Trigger on commits to the master branch
 
 jobs:
   copy_repo:
@@ -13,14 +13,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Create tmp directory
-        run: mkdir -p tmp
+      - name: Create temp directory
+        run: mkdir -p temp
 
-      - name: Copy repository to tmp
+      - name: Copy repository to temp
         run: |
-          cp -r . tmp/ # Copy all files and directories recursively
-          # Optionally, exclude the .git directory if you don't need it in the copy.
-          # rm -rf tmp/.git
+          cp -r . temp/ # Copy all files and directories recursively
+          # Optionally remove .git directory within the copy
+          # rm -rf temp/.git
 
-      - name: Optional: List files in tmp
-        run: ls -al tmp/ # For debugging purposes
+      - name: Optional: List files in temp
+        run: ls -al temp/ # For debugging purposes
