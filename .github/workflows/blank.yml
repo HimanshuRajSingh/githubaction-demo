@@ -1,26 +1,36 @@
-name: Copy Repository to temp
+name: Check New File Creation
 
 on:
   push:
     branches:
-      - master # Trigger on commits to the master branch
+      - main # or your branch
 
 jobs:
-  copy_repo:
+  check_new_file:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 2 # Get the previous commit for comparison
 
-      - name: Create temp directory
-        run: mkdir -p temp
-
-      - name: Copy repository to temp
+      - name: Get list of changed files
+        id: changed-files
         run: |
-          cp -r . temp/ # Copy all files and directories recursively
-          # Optionally remove .git directory within the copy
-          # rm -rf temp/.git
+          new_files=$(git diff --name-only --diff-filter=A HEAD~1 HEAD)
+          if [[ -n "$new_files" ]]; then
+            echo "NEW_FILES=$new_files" >> $GITHUB_OUTPUT
+          fi
 
-      - name: Optional: List files in temp
-        run: ls -al temp/ # For debugging purposes
+      - name: Print new file names
+        if: steps.changed-files.outputs.NEW_FILES
+        run: |
+          echo "New files created:"
+          for file in ${{ steps.changed-files.outputs.NEW_FILES }}; do
+            echo "- $file"
+          done
+
+      - name: Print no new files message
+        if: "! steps.changed-files.outputs.NEW_FILES"
+        run: echo "No new files created."
