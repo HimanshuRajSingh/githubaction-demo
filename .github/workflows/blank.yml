@@ -1,4 +1,4 @@
-name: Check File Type
+name: Copy Repository to tmp
 
 on:
   push:
@@ -6,23 +6,21 @@ on:
       - main
 
 jobs:
-  check_file_type:
+  copy_repo:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Check file type
+      - name: Create tmp directory
+        run: mkdir -p tmp
+
+      - name: Copy repository to tmp
         run: |
-          for file in $(git ls-files); do
-            if [[ -f "$file" ]]; then
-              if [[ "$file" == *.py ]]; then
-                echo "File '$file' is a Python script."
-              elif [[ "$(file --mime-type "$file")" == *text/plain* ]]; then
-                echo "File '$file' is a plain text file."
-              else
-                echo "File '$file' is not a text file. It is: $(file --mime-type "$file")"
-              fi
-            fi
-          done
+          cp -r . tmp/ # Copy all files and directories recursively
+          # Optionally, exclude the .git directory if you don't need it in the copy.
+          # rm -rf tmp/.git
+
+      - name: Optional: List files in tmp
+        run: ls -al tmp/ # For debugging purposes
