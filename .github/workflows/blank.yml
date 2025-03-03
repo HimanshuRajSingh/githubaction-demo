@@ -1,36 +1,46 @@
-# This is a basic workflow to help you get started with Actions
+#Test file
+name: Email Notification on Commit
 
-name: CI
-
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches:
+      - main # Or whatever branch you want to monitor
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+  send_email:
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
+      - name: Get commit details
+        id: commit_info
         run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+          echo "COMMIT_SHA=${GITHUB_SHA}" >> $GITHUB_OUTPUT
+          echo "COMMIT_MESSAGE=$(git log -1 --pretty=%B)" >> $GITHUB_OUTPUT
+          echo "COMMIT_AUTHOR=$(git log -1 --pretty=%an)" >> $GITHUB_OUTPUT
+          echo "COMMIT_AUTHOR_EMAIL=$(git log -1 --pretty=%ae)" >> $GITHUB_OUTPUT
+          echo "COMMIT_URL=${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/commit/${GITHUB_SHA}" >> $GITHUB_OUTPUT
+
+      - name: Send Email
+        uses: dawidd6/action-send-mail@v3 # Using a third-party action for sending emails.
+        with:
+          server_address: smtp.gmail.com # or your SMTP server
+          server_port: 587 # or your SMTP port
+          username: ${{secrets.MAIL_USERNAME}} # your email address
+          password: ${{secrets.MAIL_PASSWORD}} # your email password or app password
+          subject: "New Commit: ${{ github.repository }}"
+          to: ${{secrets.RECIPIENT_EMAIL}} # Recipient email address
+          from: ${{secrets.MAIL_USERNAME}}
+          body: |
+            A new commit has been pushed to ${{ github.repository }}.
+
+            Commit SHA: ${{ steps.commit_info.outputs.COMMIT_SHA }}
+            Commit Message: ${{ steps.commit_info.outputs.COMMIT_MESSAGE }}
+            Author: ${{ steps.commit_info.outputs.COMMIT_AUTHOR }} (${{ steps.commit_info.outputs.COMMIT_AUTHOR_EMAIL }})
+            Commit URL: ${{ steps.commit_info.outputs.COMMIT_URL }}
+
+            Repository: ${{ github.repository }}
+            Branch: ${{ github.ref_name }}
+          secure: tls # or ssl, depending on your SMTP server.
