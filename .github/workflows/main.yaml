@@ -28,7 +28,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/your-image-name:${{ github.sha }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/githubaction-demo:${{ github.sha }}
           # if you want latest tag use this line instead of the github sha line above.
           # tags: ${{ secrets.DOCKERHUB_USERNAME }}/your-image-name:latest
 
