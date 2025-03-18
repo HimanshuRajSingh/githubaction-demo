@@ -22,18 +22,18 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # - name: Build and push Docker image
-      #   id: docker_build
-      #   uses: docker/build-push-action@v3
-      #   with:
-      #     context: .
-      #     push: true
-      #     # Use a specific tag, using github sha to keep versions.
-      #     tags: ${{ secrets.DOCKERHUB_USERNAME }}/githubaction-demo:${{ github.sha }}
-      #     # if you need the latest tag use this line instead of the github sha line above.
-      #     # tags: ${{ secrets.DOCKERHUB_USERNAME }}/your-image-name:latest
-      #     # add this line for multi-platform builds
-      #     # platforms: linux/amd64,linux/arm64
+      - name: Build and push Docker image
+        id: docker_build
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          # Use a specific tag, using github sha to keep versions.
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/githubaction-demo:${{ github.sha }}
+          # if you need the latest tag use this line instead of the github sha line above.
+          # tags: ${{ secrets.DOCKERHUB_USERNAME }}/your-image-name:latest
+          # add this line for multi-platform builds
+          # platforms: linux/amd64,linux/arm64
 
       # - name: Echo Image URL
       #   run: echo "Docker Image URL: ${{ steps.docker_build.outputs.digest }}"
