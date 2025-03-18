@@ -33,8 +33,8 @@ jobs:
           # tags: ${{ secrets.DOCKERHUB_USERNAME }}/your-image-name:latest
           # platforms: linux/amd64,linux/arm64
 
-      - name: Echo Image URL
-        run: echo "Docker Image URL: ${{ steps.docker_build.outputs.digest }}"
+      # - name: Echo Image URL
+      #   run: echo "Docker Image URL: ${{ steps.docker_build.outputs.digest }}"
 
-      - name: Check docker login
-        run: docker info
+      # - name: Check docker login
+      #   run: docker info
