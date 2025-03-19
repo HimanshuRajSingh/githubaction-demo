@@ -7,8 +7,5 @@
     "test": "pytest"
   },
   "author": "himanshu",
-  "license": "ISC",
-  "devDependencies": {
-    "pytest": "^7.4.0"
-  }
+  "license": "ISC"
 }
