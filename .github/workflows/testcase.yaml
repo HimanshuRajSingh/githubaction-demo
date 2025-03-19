@@ -12,4 +12,8 @@ jobs:
                     node-version: 20
                - name: print node version
                  run: node -v
+               - name: install dependencies
+                 run: npm ci
+               - name: Run tests
+                 run: npm run test
                 
