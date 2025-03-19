@@ -9,6 +9,6 @@
   "author": "himanshu",
   "license": "ISC",
   "devDependencies": {
-    "pytest": "^7.4.0"  // or the latest version of pytest
+    "pytest": "^7.4.0"
   }
 }
