@@ -4,8 +4,11 @@
   "description": "demo",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "pytest"
   },
   "author": "himanshu",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "pytest": "^7.4.0"  // or the latest version of pytest
+  }
 }
