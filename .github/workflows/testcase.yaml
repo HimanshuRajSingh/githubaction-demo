@@ -1,4 +1,4 @@
-name: Test and Deploy Python App
+name: Test, Build, and Deploy Python App
 
 on:
   push:
@@ -24,7 +24,7 @@ jobs:
       - name: Run tests
         run: pytest #or python -m unittest discover if using unittest.
 
-  deploy:
+  build:
     needs: test
     runs-on: ubuntu-latest
     steps:
@@ -39,10 +39,25 @@ jobs:
       - name: Install Python dependencies
         run: pip install -r requirements.txt
 
-      - name: Deploy to GitHub Pages (Example)
+      - name: Execute app.py (Build)
+        run: python app.py
+
+      - name: List root directory contents
+        run: ls -al
+
+      - name: List public directory contents
+        run: ls -al ./public
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public #or the folder containing your static site.
-
-      #Add more deployment steps here (e.g., to a cloud platform)
+          publish_dir: ./public
+          publish_branch: gh-pages
