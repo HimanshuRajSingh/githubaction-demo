@@ -4,5 +4,5 @@ def test_addition():
 
 def test_string():
     a = "hello"
-    b = "hello
+    b = "hello"
     assert a == b
