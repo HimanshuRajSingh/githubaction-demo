@@ -1,48 +1,48 @@
-name: Deploy Dist
-on: [push, workflow_dispatch]
+name: Test and Deploy Python App
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
 jobs:
-     test:
-         runs-on : ubuntu-latest
-         steps: 
-               - name: Get Code
-                 uses: actions/checkout@v4
-               - name: Install Node 20
-                 uses: actions/setup-node@v4
-                 with:
-                    node-version: 20
-               - name: print node version
-                 run: node -v
-               - name: install dependencies
-                 run: npm install
-               - name: Set up Python
-                 uses: actions/setup-python@v4
-                 with:
-                    python-version: '3.9'
-               - name: Install Python dependencies
-                 run: pip install -r requirements.txt
-               - name: Run tests
-                 run: npm run test
-     deploy:
-         needs: test
-         runs-on : ubuntu-latest
-         steps: 
-               - name: Get Code
-                 uses: actions/checkout@v4
-               - name: Install Node 20
-                 uses: actions/setup-node@v4
-                 with:
-                    node-version: 20
-               - name: print node version
-                 run: node -v
-               - name: install dependencies
-                 run: npm install
-               - name: Set up Python
-                 uses: actions/setup-python@v4
-                 with:
-                    python-version: '3.9'
-               - name: Install Python dependencies
-                 run: pip install -r requirements.txt
-               - name: Build Project
-                 run: npm run build
-               - name: Deploy
-                 run: echo "Deployed successfully"
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run tests
+        run: pytest #or python -m unittest discover if using unittest.
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Deploy to GitHub Pages (Example)
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public #or the folder containing your static site.
+
+      #Add more deployment steps here (e.g., to a cloud platform)
