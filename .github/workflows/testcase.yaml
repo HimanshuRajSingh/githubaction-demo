@@ -99,6 +99,6 @@ jobs:
          uses: SonarSource/sonarcloud-github-action@master
          env:
            github_token: ${{ secrets.GITHUB_TOKEN }}
-           Sonar: ${{ secrets.Sonar }}
+           SONAR_TOKEN: ${{ secrets.Sonar }}
            
         
