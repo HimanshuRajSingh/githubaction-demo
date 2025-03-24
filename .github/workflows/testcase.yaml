@@ -84,21 +84,20 @@ name: Sonar Ananlysis
 on:
   push:
     branches:
-      -main
+      - main
   pull_request:
-      types: [opened, synchronize, reopened]
-jobs: 
-   Sonarcloud:
-     name: Sonarcloud
-     runs-on: ubuntu-latest
-     steps:
-       - uses: actions/checkout@v3
-         with:
-           fetch-depth: 0
-       - name: sonarcloud scan
-         uses: SonarSource/sonarcloud-github-action@master
-         env:
-           github_token: ${{ secrets.GITHUB_TOKEN }}
-           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-           
+    types: [opened, synchronize, reopened]
+jobs:
+  Sonarcloud:
+    name: Sonarcloud
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: sonarcloud scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR }} # Corrected variable name
         
