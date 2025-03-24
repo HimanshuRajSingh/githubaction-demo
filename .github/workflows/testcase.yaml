@@ -79,25 +79,27 @@
 #           echo "::notice title=GitHub Pages URL::[Visit your site](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/)"
 
 
-
 name: Sonar Ananlysis
+
 on:
   push:
     branches:
       - main
   pull_request:
     types: [opened, synchronize, reopened]
+
 jobs:
   Sonarcloud:
     name: Sonarcloud
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: sonarcloud scan
+
+      - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # Corrected variable name
-        
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
