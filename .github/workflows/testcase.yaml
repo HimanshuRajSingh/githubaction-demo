@@ -1,106 +1,107 @@
-# name: Test, Build, and Deploy Python App
-
-# on:
-#   push:
-#     branches:
-#       - main
-#   workflow_dispatch:
-
-# jobs:
-#   test:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Checkout code
-#         uses: actions/checkout@v4
-
-#       - name: Set up Python
-#         uses: actions/setup-python@v4
-#         with:
-#           python-version: '3.9'
-
-#       - name: Install Python dependencies
-#         run: pip install -r requirements.txt
-
-#       - name: Run tests
-#         run: pytest #or python -m unittest discover if using unittest.
-
-#   build:
-#     needs: test
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Checkout code
-#         uses: actions/checkout@v4
-
-#       - name: Set up Python
-#         uses: actions/setup-python@v4
-#         with:
-#           python-version: '3.9'
-
-#       - name: Install Python dependencies
-#         run: pip install -r requirements.txt
-
-#       - name: Execute app.py (Build)
-#         run: python app.py
-
-#       - name: List root directory contents
-#         run: ls -al
-
-#       - name: List public directory contents
-#         run: ls -al ./public
-
-#       - name: Upload artifact
-#         uses: actions/upload-artifact@v4
-#         with:
-#           name: public-directory
-#           path: ./public
-
-#   deploy:
-#     needs: build
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Checkout code
-#         uses: actions/checkout@v4
-
-#       - name: Download artifact
-#         uses: actions/download-artifact@v4
-#         with:
-#           name: public-directory
-#           path: ./public
-
-#       - name: Deploy to GitHub Pages
-#         uses: peaceiris/actions-gh-pages@v3
-#         with:
-#           github_token: ${{ secrets.GITHUB_TOKEN }}
-#           publish_dir: ./public
-#           publish_branch: gh-pages
-
-#       - name: Display GitHub Pages URL
-#         run: |
-#           echo "::notice title=GitHub Pages URL::[Visit your site](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/)"
-
-
-name: Sonar Ananlysis
+#-------------Deployement to github page--------------------------------------------------
+name: Test, Build, and Deploy Python App
 
 on:
   push:
     branches:
       - main
-  pull_request:
-    types: [opened, synchronize, reopened]
+  workflow_dispatch:
 
 jobs:
-  Sonarcloud:
-    name: Sonarcloud
+  test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+        uses: actions/checkout@v4
 
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run tests
+        run: pytest #or python -m unittest discover if using unittest.
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Execute app.py (Build)
+        run: python app.py
+
+      - name: List root directory contents
+        run: ls -al
+
+      - name: List public directory contents
+        run: ls -al ./public
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-directory
+          path: ./public
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: public-directory
+          path: ./public
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
+          publish_branch: gh-pages
+
+      - name: Display GitHub Pages URL
+        run: |
+          echo "::notice title=GitHub Pages URL::[Visit your site](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/)"
+
+#-------------------------------------SonarQube-Integration-------------------------------------------------------------
+# name: Sonar Ananlysis
+
+# on:
+#   push:
+#     branches:
+#       - main
+#   pull_request:
+#     types: [opened, synchronize, reopened]
+
+# jobs:
+#   Sonarcloud:
+#     name: Sonarcloud
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v3
+#         with:
+#           fetch-depth: 0
+
+#       - name: SonarCloud Scan
+#         uses: SonarSource/sonarcloud-github-action@master
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
          
