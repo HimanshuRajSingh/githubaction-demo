@@ -1,8 +1,8 @@
 name: Hello World
 
-on:
-  push:
-    branches:
+# on:
+#   push:
+#     branches:
       - main # Or your default branch
   # workflow_dispatch: # Enables manual triggering
 
