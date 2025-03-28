@@ -1,4 +1,4 @@
-# app.py (This will generate the static HTML)
+
 
 import os
 
